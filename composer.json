@@ -57,6 +57,7 @@
         }
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.14",
         "symfony/web-server-bundle": "4.2.*"
     }
 }
