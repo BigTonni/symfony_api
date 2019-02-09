@@ -121,4 +121,28 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
 
         return $form;
     }
+
+    /**
+     * @Rest\View()
+     * @Rest\Delete("/article/{id}")
+     *
+     * @param Request $request
+     * @param Article $article
+     *
+     * @return Article|\Symfony\Component\Form\FormInterface
+     */
+    public function remove(Request $request, Article $article)
+    {
+        $form = $this->createForm(ArticleType::class, $article, [
+            'method' => 'delete',
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+
+            return View::create($article, Codes::HTTP_NO_CONTENT);
+        }
+
+        return $form;
+    }
 }
