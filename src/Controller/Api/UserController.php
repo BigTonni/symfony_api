@@ -12,6 +12,8 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 class UserController extends AbstractFOSRestController implements ClassResourceInterface
 {
@@ -25,6 +27,15 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
     /**
      * @Rest\View()
      * @Rest\Get("/users")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns users",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Users")
      */
     public function listUsers()
     {
@@ -48,6 +59,15 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
     /**
      * @Rest\View()
      * @Rest\Get("/users/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns a user",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Users")
      *
      * @param $id
      *
@@ -75,6 +95,15 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
     /**
      * @Rest\View()
      * @Rest\Post("/user")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Create a new user",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Users")
      *
      * @param Request $request
      *
@@ -98,6 +127,15 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
     /**
      * @Rest\View()
      * @Rest\Put("/user/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Update the user",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Users")
      *
      * @param Request $request
      * @param User    $user
@@ -122,6 +160,15 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
     /**
      * @Rest\View()
      * @Rest\Delete("/user/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Delete the user",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=User::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Users")
      *
      * @param Request $request
      * @param User    $user

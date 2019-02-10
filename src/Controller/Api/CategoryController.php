@@ -12,6 +12,8 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 class CategoryController extends AbstractFOSRestController implements ClassResourceInterface
 {
@@ -25,6 +27,15 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
     /**
      * @Rest\View()
      * @Rest\Get("/categories")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns categories",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Category::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Categories")
      */
     public function listCategories()
     {
@@ -47,6 +58,15 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
     /**
      * @Rest\View()
      * @Rest\Get("/categories/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns a category",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Category::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Categories")
      *
      * @param $id
      *
@@ -73,6 +93,15 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
     /**
      * @Rest\View()
      * @Rest\Post("/category")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Create a new category",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Category::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Categories")
      *
      * @param Request $request
      *
@@ -96,6 +125,15 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
     /**
      * @Rest\View()
      * @Rest\Put("/category/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Update the category",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Category::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Categories")
      *
      * @param Request  $request
      * @param Category $category
@@ -120,6 +158,15 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
     /**
      * @Rest\View()
      * @Rest\Delete("/category/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Delete the category",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Category::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Categories")
      *
      * @param Request  $request
      * @param Category $category

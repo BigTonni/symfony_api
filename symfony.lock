@@ -230,6 +230,9 @@
             "ref": "6c1ceb662f8997085f739cd089bfbef67f245983"
         }
     },
+    "symfony/asset": {
+        "version": "v4.2.3"
+    },
     "symfony/cache": {
         "version": "v4.2.3"
     },

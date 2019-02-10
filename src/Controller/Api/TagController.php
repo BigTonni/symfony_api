@@ -12,6 +12,8 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 class TagController extends AbstractFOSRestController implements ClassResourceInterface
 {
@@ -25,6 +27,15 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
     /**
      * @Rest\View()
      * @Rest\Get("/tags")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns tags",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Tag::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Tags")
      */
     public function listTags()
     {
@@ -47,6 +58,15 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
     /**
      * @Rest\View()
      * @Rest\Get("/tags/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns a tag",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Tag::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Tags")
      *
      * @param $id
      *
@@ -73,6 +93,15 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
     /**
      * @Rest\View()
      * @Rest\Post("/tag")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Create a new tag",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Tag::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Tags")
      *
      * @param Request $request
      *
@@ -96,6 +125,15 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
     /**
      * @Rest\View()
      * @Rest\Put("/tag/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Update the tag",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Tag::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Tags")
      *
      * @param Request $request
      * @param Tag     $tag
@@ -120,6 +158,15 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
     /**
      * @Rest\View()
      * @Rest\Delete("/tag/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Delete the tag",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Tag::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Tags")
      *
      * @param Request $request
      * @param Tag     $tag

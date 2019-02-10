@@ -12,6 +12,8 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 class ArticleController extends AbstractFOSRestController implements ClassResourceInterface
 {
@@ -25,6 +27,15 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
     /**
      * @Rest\View()
      * @Rest\Get("/articles")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns articles",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Articles")
      */
     public function listArticles()
     {
@@ -50,6 +61,15 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
     /**
      * @Rest\View()
      * @Rest\Get("/articles/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns a article",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Articles")
      *
      * @param $id
      *
@@ -78,6 +98,15 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
     /**
      * @Rest\View()
      * @Rest\Post("/article")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Create a new article",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Articles")
      *
      * @param Request $request
      *
@@ -102,6 +131,15 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
     /**
      * @Rest\View()
      * @Rest\Put("/article/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Update the article",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Articles")
      *
      * @param Request $request
      * @param Article $article
@@ -126,6 +164,15 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
     /**
      * @Rest\View()
      * @Rest\Delete("/article/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Delete the article",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Articles")
      *
      * @param Request $request
      * @param Article $article
