@@ -26,7 +26,7 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
      * @Rest\View()
      * @Rest\Get("/articles")
      */
-    public function getArticles()
+    public function listArticles()
     {
         $articles = $this->em->getRepository(Article::class)->findAll();
         $formatted = [];
@@ -34,6 +34,7 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
             $formatted[] = [
                 'id' => $article->getId(),
                 'title' => $article->getTitle(),
+                'slug' => $article->getSlug(),
                 'body' => $article->getBody(),
                 'category' => $article->getCategory()->getTitle(),
                 'author' => $article->getAuthor()->getFullName(),
