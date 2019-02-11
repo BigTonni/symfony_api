@@ -168,6 +168,44 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
 
     /**
      * @Rest\View()
+     * @Rest\Patch("/articles/{id}")
+     * @SWG\Response(
+     *     response=200,
+     *     description="Update the article",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Article::class, groups={"full"}))
+     *     )
+     * )
+     * @SWG\Tag(name="Articles")
+     *
+     * @param Request $request
+     * @param Article $article
+     *
+     * @return JsonResponse|\Symfony\Component\Form\FormInterface
+     */
+    public function patch(Request $request, Article $article)
+    {
+        $article = $this->em->getRepository(Article::class)->find($article->getId());
+        if (!$article) {
+            return new JsonResponse(['message' => 'Article not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $form = $this->createForm(ArticleType::class, $article, [
+            'method' => 'patch',
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+
+            return View::create($article, Codes::HTTP_NO_CONTENT);
+        }
+
+        return $form;
+    }
+
+    /**
+     * @Rest\View()
      * @Rest\Delete("/articles/{id}")
      * @SWG\Response(
      *     response=200,
