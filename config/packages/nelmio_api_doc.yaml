@@ -1,0 +1,27 @@
+#nelmio_api_doc:
+#    areas:
+#        path_patterns: # an array of regexps
+#            - ^/api(?!/doc$)
+#        host_patterns:
+#            - ^api\.
+
+nelmio_api_doc:
+    documentation:
+        host: 127.0.0.1:8000
+        schemes: [http, https]
+        info:
+            title: Blog App
+            description: Cool app!
+            version: 1.0.0
+            contact:
+                name: API Support
+                url: http://www.example.com/support
+                email: support@example.com
+#        securityDefinitions:
+#            Bearer:
+#                type: apiKey
+#                description: 'Value: Bearer {jwt}'
+#                name: Authorization
+#                in: header
+#        security:
+#            - Bearer: []
