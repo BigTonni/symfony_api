@@ -9,11 +9,11 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
 
 class CategoryController extends AbstractFOSRestController implements ClassResourceInterface
 {
@@ -92,7 +92,7 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
 
     /**
      * @Rest\View()
-     * @Rest\Post("/category")
+     * @Rest\Post("/categories")
      * @SWG\Response(
      *     response=200,
      *     description="Create a new category",
@@ -124,7 +124,7 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
 
     /**
      * @Rest\View()
-     * @Rest\Put("/category/{id}")
+     * @Rest\Put("/categories/{id}")
      * @SWG\Response(
      *     response=200,
      *     description="Update the category",
@@ -138,10 +138,14 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
      * @param Request  $request
      * @param Category $category
      *
-     * @return Category|\Symfony\Component\Form\FormInterface
+     * @return JsonResponse|\Symfony\Component\Form\FormInterface
      */
     public function update(Request $request, Category $category)
     {
+        $category = $this->em->getRepository(Category::class)->find($category->getId());
+        if (!$category) {
+            return new JsonResponse(['message' => 'Category not found'], Response::HTTP_NOT_FOUND);
+        }
         $form = $this->createForm(CategoryType::class, $category, [
             'method' => 'put',
         ]);
@@ -157,7 +161,7 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
 
     /**
      * @Rest\View()
-     * @Rest\Delete("/category/{id}")
+     * @Rest\Delete("/categories/{id}")
      * @SWG\Response(
      *     response=200,
      *     description="Delete the category",
@@ -168,23 +172,20 @@ class CategoryController extends AbstractFOSRestController implements ClassResou
      * )
      * @SWG\Tag(name="Categories")
      *
-     * @param Request  $request
      * @param Category $category
      *
-     * @return Category|\Symfony\Component\Form\FormInterface
+     * @return JsonResponse
      */
-    public function remove(Request $request, Category $category)
+    public function remove(Category $category)
     {
-        $form = $this->createForm(CategoryType::class, $category, [
-            'method' => 'delete',
-        ]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $category = $this->em->getRepository(Category::class)->find($category->getId());
+        if ($category) {
+            $this->em->remove($category);
             $this->em->flush();
 
-            return View::create($category, Codes::HTTP_NO_CONTENT);
+            return new JsonResponse(null, 204);
         }
 
-        return $form;
+        return new JsonResponse(['message' => 'Category not found'], Response::HTTP_NOT_FOUND);
     }
 }

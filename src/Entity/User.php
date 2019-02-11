@@ -7,11 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="users")
+ * @Serializer\ExclusionPolicy("all")
  */
 class User
 {
@@ -19,12 +21,14 @@ class User
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Serializer\Expose()
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=64, name="full_name")
      * @Assert\NotBlank()
+     * @Serializer\Expose()
      */
     private $fullName;
 
@@ -32,12 +36,14 @@ class User
      * @ORM\Column(type="string", length=64, unique=true)
      * @Assert\NotBlank()
      * @Assert\Length(min=2, max=50)
+     * @Serializer\Expose()
      */
     private $userName;
 
     /**
      * @ORM\Column(type="string", length=64, unique=true)
      * @Assert\Email()
+     * @Serializer\Expose()
      */
     private $email;
 
@@ -62,6 +68,7 @@ class User
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      * @Assert\DateTime()
+     * @Serializer\Expose()
      */
     private $createdAt;
 

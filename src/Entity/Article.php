@@ -7,11 +7,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use JMS\Serializer\Annotation as Serializer;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
  * @ORM\Table(name="articles")
+ * @Serializer\ExclusionPolicy("all")
  */
 class Article
 {
@@ -27,12 +31,15 @@ class Article
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Serializer\Expose()
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @SWG\Property(type="string", maxLength=255)
+     * @Serializer\Expose()
      */
     private $title;
 
@@ -41,6 +48,7 @@ class Article
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      * @Assert\Type("string")
+     * @Serializer\Expose()
      */
     private $slug;
 
@@ -48,11 +56,13 @@ class Article
      * @ORM\Column(type="text", nullable=true)
      * @Assert\NotBlank()
      * @Assert\Length(min=10)
+     * @Serializer\Expose()
      */
     private $body;
 
     /**
      * @ORM\Column(type="smallint")
+     * @Serializer\Expose()
      */
     private $status;
 
@@ -68,6 +78,7 @@ class Article
      * @Gedmo\Blameable(on="change", field={"title", "body"})
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
+     * @SWG\Property(ref=@Model(type=User::class))
      */
     private $author;
 

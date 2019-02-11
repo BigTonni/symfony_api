@@ -9,11 +9,11 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
 
 class ArticleController extends AbstractFOSRestController implements ClassResourceInterface
 {
@@ -60,7 +60,7 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
 
     /**
      * @Rest\View()
-     * @Rest\Get("/articles/{id}")
+     * @Rest\Get("/articles/{id}", requirements={"id" = "^\d{1,}$"})
      * @SWG\Response(
      *     response=200,
      *     description="Returns a article",
@@ -97,7 +97,7 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
 
     /**
      * @Rest\View()
-     * @Rest\Post("/article")
+     * @Rest\Post("/articles")
      * @SWG\Response(
      *     response=200,
      *     description="Create a new article",
@@ -130,7 +130,7 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
 
     /**
      * @Rest\View()
-     * @Rest\Put("/article/{id}")
+     * @Rest\Put("/articles/{id}")
      * @SWG\Response(
      *     response=200,
      *     description="Update the article",
@@ -144,10 +144,15 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
      * @param Request $request
      * @param Article $article
      *
-     * @return Article|\Symfony\Component\Form\FormInterface
+     * @return JsonResponse|\Symfony\Component\Form\FormInterface
      */
     public function update(Request $request, Article $article)
     {
+        $article = $this->em->getRepository(Article::class)->find($article->getId());
+        if (!$article) {
+            return new JsonResponse(['message' => 'Article not found'], Response::HTTP_NOT_FOUND);
+        }
+
         $form = $this->createForm(ArticleType::class, $article, [
             'method' => 'put',
         ]);
@@ -163,7 +168,7 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
 
     /**
      * @Rest\View()
-     * @Rest\Delete("/article/{id}")
+     * @Rest\Delete("/articles/{id}")
      * @SWG\Response(
      *     response=200,
      *     description="Delete the article",
@@ -174,23 +179,20 @@ class ArticleController extends AbstractFOSRestController implements ClassResour
      * )
      * @SWG\Tag(name="Articles")
      *
-     * @param Request $request
      * @param Article $article
      *
-     * @return Article|\Symfony\Component\Form\FormInterface
+     * @return JsonResponse
      */
-    public function remove(Request $request, Article $article)
+    public function remove(Article $article)
     {
-        $form = $this->createForm(ArticleType::class, $article, [
-            'method' => 'delete',
-        ]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $article = $this->em->getRepository(Article::class)->find($article->getId());
+        if ($article) {
+            $this->em->remove($article);
             $this->em->flush();
 
-            return View::create($article, Codes::HTTP_NO_CONTENT);
+            return new JsonResponse(null, 204);
         }
 
-        return $form;
+        return new JsonResponse(['message' => 'Article not found'], Response::HTTP_NOT_FOUND);
     }
 }

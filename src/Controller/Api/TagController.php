@@ -9,11 +9,11 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
 
 class TagController extends AbstractFOSRestController implements ClassResourceInterface
 {
@@ -92,7 +92,7 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
 
     /**
      * @Rest\View()
-     * @Rest\Post("/tag")
+     * @Rest\Post("/tags")
      * @SWG\Response(
      *     response=200,
      *     description="Create a new tag",
@@ -124,7 +124,7 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
 
     /**
      * @Rest\View()
-     * @Rest\Put("/tag/{id}")
+     * @Rest\Put("/tags/{id}")
      * @SWG\Response(
      *     response=200,
      *     description="Update the tag",
@@ -138,10 +138,14 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
      * @param Request $request
      * @param Tag     $tag
      *
-     * @return \Symfony\Component\Form\FormInterface|Tag
+     * @return JsonResponse|\Symfony\Component\Form\FormInterface
      */
     public function update(Request $request, Tag $tag)
     {
+        $tag = $this->em->getRepository(Tag::class)->find($tag->getId());
+        if (!$tag) {
+            return new JsonResponse(['message' => 'Tag not found'], Response::HTTP_NOT_FOUND);
+        }
         $form = $this->createForm(TagType::class, $tag, [
             'method' => 'put',
         ]);
@@ -157,7 +161,7 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
 
     /**
      * @Rest\View()
-     * @Rest\Delete("/tag/{id}")
+     * @Rest\Delete("/tags/{id}")
      * @SWG\Response(
      *     response=200,
      *     description="Delete the tag",
@@ -168,23 +172,20 @@ class TagController extends AbstractFOSRestController implements ClassResourceIn
      * )
      * @SWG\Tag(name="Tags")
      *
-     * @param Request $request
-     * @param Tag     $tag
+     * @param Tag $tag
      *
-     * @return \Symfony\Component\Form\FormInterface|Tag
+     * @return JsonResponse
      */
-    public function remove(Request $request, Tag $tag)
+    public function remove(Tag $tag)
     {
-        $form = $this->createForm(TagType::class, $tag, [
-            'method' => 'delete',
-        ]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $tag = $this->em->getRepository(Tag::class)->find($tag->getId());
+        if ($tag) {
+            $this->em->remove($tag);
             $this->em->flush();
 
-            return View::create($tag, Codes::HTTP_NO_CONTENT);
+            return new JsonResponse(null, 204);
         }
 
-        return $form;
+        return new JsonResponse(['message' => 'Tag not found'], Response::HTTP_NOT_FOUND);
     }
 }

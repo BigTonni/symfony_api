@@ -9,11 +9,11 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use Swagger\Annotations as SWG;
 
 class UserController extends AbstractFOSRestController implements ClassResourceInterface
 {
@@ -94,7 +94,7 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
 
     /**
      * @Rest\View()
-     * @Rest\Post("/user")
+     * @Rest\Post("/users")
      * @SWG\Response(
      *     response=200,
      *     description="Create a new user",
@@ -126,7 +126,7 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
 
     /**
      * @Rest\View()
-     * @Rest\Put("/user/{id}")
+     * @Rest\Put("/users/{id}")
      * @SWG\Response(
      *     response=200,
      *     description="Update the user",
@@ -140,10 +140,14 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
      * @param Request $request
      * @param User    $user
      *
-     * @return \Symfony\Component\Form\FormInterface|User
+     * @return JsonResponse|\Symfony\Component\Form\FormInterface
      */
     public function update(Request $request, User $user)
     {
+        $user = $this->em->getRepository(User::class)->find($user->getId());
+        if (!$user) {
+            return new JsonResponse(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
         $form = $this->createForm(UserType::class, $user, [
             'method' => 'put',
         ]);
@@ -159,7 +163,7 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
 
     /**
      * @Rest\View()
-     * @Rest\Delete("/user/{id}")
+     * @Rest\Delete("/users/{id}")
      * @SWG\Response(
      *     response=200,
      *     description="Delete the user",
@@ -170,23 +174,20 @@ class UserController extends AbstractFOSRestController implements ClassResourceI
      * )
      * @SWG\Tag(name="Users")
      *
-     * @param Request $request
-     * @param User    $user
+     * @param User $user
      *
-     * @return \Symfony\Component\Form\FormInterface|User
+     * @return JsonResponse
      */
-    public function remove(Request $request, User $user)
+    public function remove(User $user)
     {
-        $form = $this->createForm(UserType::class, $user, [
-            'method' => 'delete',
-        ]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $user = $this->em->getRepository(User::class)->find($user->getId());
+        if ($user) {
+            $this->em->remove($user);
             $this->em->flush();
 
-            return View::create($user, Codes::HTTP_NO_CONTENT);
+            return new JsonResponse(null, 204);
         }
 
-        return $form;
+        return new JsonResponse(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
     }
 }
